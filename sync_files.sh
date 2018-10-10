@@ -4,7 +4,8 @@ set -o pipefail
 
 # Funcao: Sync directories and files between linux servers in a active/passive cluster environment
 #
-# Author: Paulo Ricardo de Mello
+# Authors: Paulo Ricardo de Mello
+#          Anderson Nuss
 # E-mail: paulo.mello@outlook.com
 
 #############################################################################
