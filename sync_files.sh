@@ -2,7 +2,7 @@
 
 set -o pipefail
 
-# Funcao: Sync directories and files between linux servers
+# Funcao: Sync directories and files between linux servers in a active/passive cluster environment
 #
 # Author: Paulo Ricardo de Mello
 # E-mail: paulo.mello@outlook.com
@@ -11,7 +11,7 @@ set -o pipefail
 # Test if server is IPv4 or IPv6 and set $source_server #
 #############################################################################
 
-ip=192.168.1.4
+ip=$1
 
 if echo $ip |grep ":" 1>>/dev/null 2>>/dev/null
 	then
@@ -37,48 +37,48 @@ TESTE_ERRO(){
   fi
 }
 
-  # Verificar se não estamos no no ativo
+  # Check if we are in the active node
   if ip -4 addr show |grep "$ip" |cut -f6 -d " " 1>>/dev/null 2>>/dev/null
     then
-      logger -p 1 "NOTICE - SYNC_FILE - Replicacao esta executado no node ativo. Verificar com urgencia."
-      echo "Node ativo. Replicacao cancelada."
+      logger -p 1 "NOTICE - SYNC_FILE - Replication are running in the active node. Check with urgency."
+      echo "Active node. replication cancelled."
       exit 1
   fi
 
   if ip -6 addr show |grep "$ip" |cut -f6 -d " " 1>>/dev/null 2>>/dev/null
     then
-      logger -p 1 "NOTICE - SYNC_FILE - Replicacao esta executado no node ativo. Verificar com urgencia."
-      echo "Node ativo. Replicacao cancelada."
+      logger -p 1 "NOTICE - SYNC_FILE - Replication are running in the active node. Check with urgency."
+      echo "Active node. replication cancelled."
       exit 1
   fi
 
-  # Checa se existe sincronismo executando
+  # Check if another replication process exist
   if ps -ef |grep rsync |grep -v grep 1>>/dev/null 2>>/dev/null
     then
-      logger -p 1 "NOTICE - SYNC_FILE - Outro processo de replicacao esta ativo. Verificar janela de replicacao ou processo travado."
-      echo "Outro processo de replicacao esta ativo. Verificar janela de replicacao ou processo travado."
+      logger -p 1 "NOTICE - SYNC_FILE - Another replication process is active. Please verify the time schedule space or locked process."
+      echo "Another replication process is active. Please verify the time schedule space or locked process."
       exit 1
   fi
 
-  # Data
+  # Date
   date >> $log_execucao
-  echo "Inicio da Execucao" >> $log_execucao
+  echo "Replication start..." >> $log_execucao
 
  for b in `cat $arq_parametros`
  do
    dest_dir=`echo $b | awk -F / '{if (NF==1) { NF}  else { NF-=1}} NF' | tr [:blank:] /`
-   echo "Sincronizando Diretorio $b" 1>>$log_execucao 2>>$log_execucao
+   echo "Syncing dir $b" 1>>$log_execucao 2>>$log_execucao
    date >> $log_execucao
    rsync $parametros --exclude-from=$arq_parametros_exclude "$source_server:/$b" "/$dest_dir" 1>>$log_execucao 2>>$log_execucao
    TESTE_ERRO
   echo >> $log_execucao
  done
 
- # Data
+ # Date
   date >> $log_execucao
   echo >> $log_execucao
 
- # Checa se houve erro na sincronizacao
+ # Error check
  if [ $erro = "1" ]
   then
    exit 1
