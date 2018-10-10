@@ -1,5 +1,11 @@
 # sync_files
-Shell script for sync files between servers in a active/passive cluster environment.
+Shell script for sync files between linux servers in a active/passive cluster environment.
+
+# Requiriments
+- Rsync 3 or later
+
+This script don't use password authentication, please configure the keys on know_hosts in the servers.
+
 
 # Usage
 Place all files in:
