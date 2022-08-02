@@ -32,7 +32,7 @@ Example:
 ```
 
 # Authors
-This script are developed by Paulo Ricardo de Mello and Anderson Arthur Nuss.
+This script was developed by Paulo Ricardo de Mello and Anderson Arthur Nuss.
 
 # Contact
 E-mail: paulo.mello@outlook.com
